@@ -3,6 +3,12 @@
 return [
     'brand' => [
         'name' => 'Fundacja Moje Państwo',
+        'address' => 'ul. Nowogrodzka 25/37, 00-511 Warszawa',
+        'krs' => '0000359730',
+        'nip' => '1231216692',
+        'regon' => '142445947',
+        'email' => 'biuro@mojepanstwo.pl',
+        'website' => 'https://mojepanstwo.pl/',
         'primary_color' => '#364F87',
         'rule_color' => '#AEB8D6',
     ],
