@@ -1,0 +1,40 @@
+{
+    "name": "mp/mletter",
+    "description": "Reusable Laravel PDF letterhead and document rendering utilities for Fundacja Moje Państwo.",
+    "type": "library",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.3",
+        "dompdf/dompdf": "^3.1",
+        "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/filesystem": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+        "spatie/laravel-pdf": "^2.11"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0",
+        "phpunit/phpunit": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mp\\MLetter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mp\\MLetter\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mp\\MLetter\\MLetterServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
