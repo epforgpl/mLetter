@@ -3,11 +3,13 @@
 <head>
     <meta charset="utf-8">
     <style>
+        @include('mletter::partials.fonts')
+
         @page { margin: {{ $pageMargin ?? '18mm 18mm 28mm 18mm' }}; }
 
         body {
             color: {{ $bodyColor ?? '#1f2937' }};
-            font-family: DejaVu Sans, sans-serif;
+            font-family: 'Source Sans Pro', DejaVu Sans, sans-serif;
             font-size: {{ $bodyFontSize ?? '9pt' }};
             line-height: {{ $bodyLineHeight ?? '1.3' }};
             padding-bottom: {{ $bodyPaddingBottom ?? '10mm' }};
@@ -25,7 +27,7 @@
 
         .mletter-logo-title {
             color: {{ config('mletter.brand.primary_color', '#364F87') }};
-            font-family: DejaVu Sans, sans-serif;
+            font-family: sofia-pro, 'Source Sans Pro', DejaVu Sans, sans-serif;
             font-size: {{ $logoTitleFontSize ?? '10pt' }};
             font-weight: 700;
             margin-top: {{ $logoTitleMarginTop ?? '1mm' }};

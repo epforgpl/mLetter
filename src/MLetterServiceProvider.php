@@ -12,6 +12,7 @@ class MLetterServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/mletter.php', 'mletter');
 
         $this->app->singleton(Assets::class);
+        $this->app->singleton(DompdfRenderer::class);
         $this->app->singleton(GeneratedPdfRenderer::class);
         $this->app->singleton(GeneratedPdfPreviewRenderer::class);
         $this->app->singleton(PdfThumbnailGenerator::class);

@@ -7,6 +7,10 @@ use Spatie\LaravelPdf\Facades\Pdf;
 
 class GeneratedPdfPreviewRenderer
 {
+    public function __construct(private readonly DompdfRenderer $dompdfRenderer)
+    {
+    }
+
     public function render(Model $model, string $path): void
     {
         foreach (['generatedPdfView', 'generatedPdfViewData', 'generatedPdfMargins'] as $method) {
@@ -16,6 +20,12 @@ class GeneratedPdfPreviewRenderer
         }
 
         [$top, $right, $bottom, $left] = $model->generatedPdfMargins();
+
+        if ((string) config('mletter.pdf.driver', 'dompdf') === 'dompdf') {
+            $this->dompdfRenderer->render($model->generatedPdfView(), $model->generatedPdfViewData(), [$top, $right, $bottom, $left], $path);
+
+            return;
+        }
 
         Pdf::view($model->generatedPdfView(), $model->generatedPdfViewData())
             ->driver((string) config('mletter.pdf.driver', 'dompdf'))
