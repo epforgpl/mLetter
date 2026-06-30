@@ -12,12 +12,14 @@ class ViewPartialsTest extends TestCase
         return [MLetterServiceProvider::class];
     }
 
-    public function test_fonts_are_embedded_as_data_uris(): void
+    public function test_foundation_letter_layout_uses_dompdf_safe_builtin_fonts(): void
     {
-        $html = view('mletter::partials.fonts')->render();
+        $html = view('mletter::layouts.foundation-letter', [
+            'slot' => '<p>Treść</p>',
+        ])->render();
 
-        $this->assertStringContainsString('data:font/woff;base64,', $html);
-        $this->assertStringContainsString('data:font/ttf;base64,', $html);
+        $this->assertStringContainsString('font-family: DejaVu Sans, sans-serif;', $html);
+        $this->assertStringNotContainsString('@font-face', $html);
         $this->assertStringNotContainsString('file://', $html);
     }
 
