@@ -27,7 +27,7 @@
 
         .mletter-logo-title {
             color: {{ config('mletter.brand.primary_color', '#364F87') }};
-            font-family: sofia-pro, sans-serif;
+            font-family: 'Source Sans Pro', DejaVu Sans, sans-serif;
             font-size: {{ $logoTitleFontSize ?? '10pt' }};
             font-weight: 700;
             margin-top: {{ $logoTitleMarginTop ?? '1mm' }};
