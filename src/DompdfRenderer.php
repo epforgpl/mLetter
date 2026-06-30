@@ -17,8 +17,43 @@ class DompdfRenderer
         $dompdf->loadHtml($this->html($view, $data, $margins));
         $dompdf->setPaper((string) config('mletter.pdf.format', 'a4'));
         $dompdf->render();
+        $this->addPageNumbers($dompdf);
 
         file_put_contents($path, $dompdf->output());
+    }
+
+    private function addPageNumbers(Dompdf $dompdf): void
+    {
+        if (! (bool) config('mletter.pdf.page_numbers.enabled', true)) {
+            return;
+        }
+
+        $canvas = $dompdf->getCanvas();
+        $pageCount = $canvas->get_page_count();
+
+        if ($pageCount <= 1) {
+            return;
+        }
+
+        $fontMetrics = $dompdf->getFontMetrics();
+        $font = $fontMetrics->getFont(
+            (string) config('mletter.pdf.page_numbers.font', 'Source Sans Pro'),
+        ) ?: $fontMetrics->getFont('DejaVu Sans');
+        $fontSize = (float) config('mletter.pdf.page_numbers.font_size', 8);
+        $right = (float) config('mletter.pdf.page_numbers.right', 18);
+        $bottom = (float) config('mletter.pdf.page_numbers.bottom', 10);
+        $text = (string) config('mletter.pdf.page_numbers.text', '{PAGE_NUM} / {PAGE_COUNT}');
+        $maxText = str_replace(['{PAGE_NUM}', '{PAGE_COUNT}'], [(string) $pageCount, (string) $pageCount], $text);
+        $textWidth = $fontMetrics->getTextWidth($maxText, $font, $fontSize);
+        $x = $canvas->get_width() - $this->mmToPoints($right) - $textWidth;
+        $y = $canvas->get_height() - $this->mmToPoints($bottom);
+
+        $canvas->page_text($x, $y, $text, $font, $fontSize, [0.35, 0.35, 0.35]);
+    }
+
+    private function mmToPoints(float $value): float
+    {
+        return $value * 72 / 25.4;
     }
 
     /**

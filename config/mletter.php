@@ -12,6 +12,14 @@ return [
         'format' => 'a4',
         'disk' => 'local',
         'margins' => [18, 18, 18, 18],
+        'page_numbers' => [
+            'enabled' => true,
+            'text' => '{PAGE_NUM} / {PAGE_COUNT}',
+            'font' => 'Source Sans Pro',
+            'font_size' => 8,
+            'right' => 18,
+            'bottom' => 10,
+        ],
         'dompdf' => [
             'font_dir' => null,
             'font_cache' => null,
