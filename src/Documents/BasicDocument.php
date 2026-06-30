@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Mp\MLetter\Contracts\PdfDocument;
 use Mp\MLetter\Support\Typography;
 
-class LetterDocument implements PdfDocument
+class BasicDocument implements PdfDocument
 {
     private ?string $typeLine = null;
 
@@ -76,7 +76,7 @@ class LetterDocument implements PdfDocument
 
     public function view(): string
     {
-        return 'mletter::documents.letter';
+        return 'mletter::documents.basic';
     }
 
     /**

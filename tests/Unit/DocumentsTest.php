@@ -3,8 +3,8 @@
 namespace Mp\MLetter\Tests\Unit;
 
 use Mp\MLetter\Data\ContractParty;
+use Mp\MLetter\Documents\BasicDocument;
 use Mp\MLetter\Documents\CivilContractDocument;
-use Mp\MLetter\Documents\LetterDocument;
 use Mp\MLetter\MLetterServiceProvider;
 use Orchestra\Testbench\TestCase;
 
@@ -15,9 +15,9 @@ class DocumentsTest extends TestCase
         return [MLetterServiceProvider::class];
     }
 
-    public function test_letter_document_prepares_safe_view_data(): void
+    public function test_basic_document_prepares_safe_view_data(): void
     {
-        $document = LetterDocument::make()
+        $document = BasicDocument::make()
             ->typeLine('Uchwała nr R/1/2026')
             ->organizationLine('Rady Fundacji Moje Państwo')
             ->dateLine('z dnia 30 czerwca 2026 r.')
@@ -29,7 +29,7 @@ class DocumentsTest extends TestCase
 
         $data = $document->data();
 
-        $this->assertSame('mletter::documents.letter', $document->view());
+        $this->assertSame('mletter::documents.basic', $document->view());
         $this->assertSame('Rady Fundacji&nbsp;Moje&nbsp;Państwo', $data['organizationLine']);
         $this->assertStringContainsString('Fundacji&nbsp;Moje&nbsp;Państwo', $data['title']);
         $this->assertStringNotContainsString('<script>', $data['title']);
@@ -69,7 +69,7 @@ class DocumentsTest extends TestCase
 
     public function test_document_views_render(): void
     {
-        $letter = LetterDocument::make()
+        $letter = BasicDocument::make()
             ->typeLine('Dokument nr 1')
             ->title('Tytuł')
             ->bodyMarkdown('Treść');
