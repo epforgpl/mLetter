@@ -51,13 +51,13 @@
     </style>
 </head>
 <body>
-    @include('mletter::partials.foundation-letterhead')
+    @include('mletter::partials.letterhead')
 
     {{ $slot ?? '' }}
 
     @isset($showFooter)
         @if ($showFooter)
-            @include('mletter::partials.foundation-footer')
+            @include('mletter::partials.footer')
         @endif
     @endisset
 </body>

@@ -13,21 +13,22 @@ class GeneratedPdfPreviewRenderer
 
     public function render(Model $model, string $path): void
     {
-        foreach (['generatedPdfView', 'generatedPdfViewData', 'generatedPdfMargins'] as $method) {
+        foreach (['generatedPdfDocument', 'generatedPdfMargins'] as $method) {
             if (! method_exists($model, $method)) {
                 throw new \RuntimeException('Model does not implement generated PDF method: ' . $model::class . '::' . $method);
             }
         }
 
         [$top, $right, $bottom, $left] = $model->generatedPdfMargins();
+        $document = $model->generatedPdfDocument();
 
         if ((string) config('mletter.pdf.driver', 'dompdf') === 'dompdf') {
-            $this->dompdfRenderer->render($model->generatedPdfView(), $model->generatedPdfViewData(), [$top, $right, $bottom, $left], $path);
+            $this->dompdfRenderer->render($document->view(), $document->data(), [$top, $right, $bottom, $left], $path);
 
             return;
         }
 
-        Pdf::view($model->generatedPdfView(), $model->generatedPdfViewData())
+        Pdf::view($document->view(), $document->data())
             ->driver((string) config('mletter.pdf.driver', 'dompdf'))
             ->format((string) config('mletter.pdf.format', 'a4'))
             ->margins($top, $right, $bottom, $left)
