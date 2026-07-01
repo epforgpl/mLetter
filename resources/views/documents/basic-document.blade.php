@@ -99,15 +99,9 @@
     @include('mletter::partials.letterhead')
 
     <div class="document-heading">
-        @if ($typeLine)
-            <div class="document-type">{!! $typeLine !!}</div>
-        @endif
-        @if ($organizationLine)
-            <div class="document-organization">{!! $organizationLine !!}</div>
-        @endif
-        @if ($dateLine)
-            <div class="document-date">{!! $dateLine !!}</div>
-        @endif
+        @foreach ($headingLines as $headingLine)
+            <div class="document-heading-line">{!! $headingLine !!}</div>
+        @endforeach
         @if ($title)
             <div class="document-title">{!! $title !!}</div>
         @endif

@@ -6,13 +6,10 @@ use Illuminate\Support\Str;
 use Mp\MLetter\Contracts\PdfDocument;
 use Mp\MLetter\Support\Typography;
 
-class LegalDocument implements PdfDocument
+class BasicDocument implements PdfDocument
 {
-    private ?string $typeLine = null;
-
-    private ?string $organizationLine = null;
-
-    private ?string $dateLine = null;
+    /** @var array<int, ?string> */
+    private array $headingLines = [];
 
     private ?string $title = null;
 
@@ -26,23 +23,19 @@ class LegalDocument implements PdfDocument
         return new self;
     }
 
-    public function typeLine(?string $typeLine): self
+    public function headingLine(?string $headingLine): self
     {
-        $this->typeLine = $typeLine;
+        $this->headingLines[] = $headingLine;
 
         return $this;
     }
 
-    public function organizationLine(?string $organizationLine): self
+    /**
+     * @param array<int, ?string> $headingLines
+     */
+    public function headingLines(array $headingLines): self
     {
-        $this->organizationLine = $organizationLine;
-
-        return $this;
-    }
-
-    public function dateLine(?string $dateLine): self
-    {
-        $this->dateLine = $dateLine;
+        $this->headingLines = $headingLines;
 
         return $this;
     }
@@ -76,7 +69,7 @@ class LegalDocument implements PdfDocument
 
     public function view(): string
     {
-        return 'mletter::documents.legal-document';
+        return 'mletter::documents.basic-document';
     }
 
     /**
@@ -85,13 +78,23 @@ class LegalDocument implements PdfDocument
     public function data(): array
     {
         return [
-            'typeLine' => $this->escapedLine($this->typeLine),
-            'organizationLine' => $this->escapedLine($this->organizationLine),
-            'dateLine' => $this->escapedLine($this->dateLine),
+            'headingLines' => $this->escapedHeadingLines(),
             'title' => $this->escapedLine($this->title),
             'bodyHtml' => Typography::nonBreakingPdfText($this->bodyHtml),
             'signatures' => $this->escapedSignatures(),
         ];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function escapedHeadingLines(): array
+    {
+        return collect($this->headingLines)
+            ->map(fn (?string $line): ?string => $this->escapedLine($line))
+            ->filter(fn (?string $line): bool => $line !== null)
+            ->values()
+            ->all();
     }
 
     private function escapedLine(?string $line): ?string

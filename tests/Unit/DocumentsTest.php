@@ -3,9 +3,9 @@
 namespace Mp\MLetter\Tests\Unit;
 
 use Mp\MLetter\Data\ContractParty;
+use Mp\MLetter\Documents\BasicDocument;
 use Mp\MLetter\Documents\CivilContractDocument;
 use Mp\MLetter\Documents\LetterDocument;
-use Mp\MLetter\Documents\LegalDocument;
 use Mp\MLetter\MLetterServiceProvider;
 use Orchestra\Testbench\TestCase;
 
@@ -16,12 +16,14 @@ class DocumentsTest extends TestCase
         return [MLetterServiceProvider::class];
     }
 
-    public function test_legal_document_prepares_safe_view_data(): void
+    public function test_basic_document_prepares_safe_view_data(): void
     {
-        $document = LegalDocument::make()
-            ->typeLine('Uchwała nr R/1/2026')
-            ->organizationLine('Rady Fundacji Moje Państwo')
-            ->dateLine('z dnia 30 czerwca 2026 r.')
+        $document = BasicDocument::make()
+            ->headingLines([
+                'Uchwała nr R/1/2026',
+                'Rady Fundacji Moje Państwo',
+                'z dnia 30 czerwca 2026 r.',
+            ])
             ->title('Sprawozdanie Fundacji Moje Państwo <script>bad()</script>')
             ->bodyMarkdown('Kwota 3 333 744,13 zł')
             ->signatures([
@@ -30,11 +32,26 @@ class DocumentsTest extends TestCase
 
         $data = $document->data();
 
-        $this->assertSame('mletter::documents.legal-document', $document->view());
-        $this->assertSame('Rady Fundacji&nbsp;Moje&nbsp;Państwo', $data['organizationLine']);
+        $this->assertSame('mletter::documents.basic-document', $document->view());
+        $this->assertSame('Rady Fundacji&nbsp;Moje&nbsp;Państwo', $data['headingLines'][1]);
         $this->assertStringContainsString('Fundacji&nbsp;Moje&nbsp;Państwo', $data['title']);
         $this->assertStringNotContainsString('<script>', $data['title']);
         $this->assertStringContainsString('3&nbsp;333&nbsp;744,13&nbsp;zł', $data['bodyHtml']);
+    }
+
+    public function test_basic_document_can_append_heading_lines(): void
+    {
+        $document = BasicDocument::make()
+            ->headingLine('Dokument nr 1')
+            ->headingLine(null)
+            ->headingLine('Fundacja Moje Państwo');
+
+        $data = $document->data();
+
+        $this->assertSame([
+            'Dokument nr 1',
+            'Fundacja&nbsp;Moje&nbsp;Państwo',
+        ], $data['headingLines']);
     }
 
     public function test_civil_contract_document_prepares_safe_view_data(): void
@@ -89,8 +106,8 @@ class DocumentsTest extends TestCase
 
     public function test_document_views_render(): void
     {
-        $legalDocument = LegalDocument::make()
-            ->typeLine('Dokument nr 1')
+        $basicDocument = BasicDocument::make()
+            ->headingLine('Dokument nr 1')
             ->title('Tytuł')
             ->bodyMarkdown('Treść');
 
@@ -105,7 +122,7 @@ class DocumentsTest extends TestCase
             ->recipient('Jan Kowalski')
             ->bodyHtml('<p>Treść pisma</p>');
 
-        $this->assertStringContainsString('Dokument nr 1', view($legalDocument->view(), $legalDocument->data())->render());
+        $this->assertStringContainsString('Dokument nr 1', view($basicDocument->view(), $basicDocument->data())->render());
         $this->assertStringContainsString('Jan Kowalski', view($contract->view(), $contract->data())->render());
         $this->assertStringContainsString('Treść pisma', view($letterDocument->view(), $letterDocument->data())->render());
     }
