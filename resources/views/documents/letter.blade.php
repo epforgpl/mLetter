@@ -10,6 +10,7 @@
         .date { text-align: right; color: #333; margin-top: 18mm; }
         .recipient { margin: 12mm 0 9mm auto; width: 48%; min-height: 20mm; }
         .subject { font-weight: 700; margin-bottom: 8mm; }
+        .body { text-align: justify; }
         .body p { margin: 0 0 4mm; }
         .body ul, .body ol { margin-top: 0; padding-left: 8mm; }
         .signature { margin-top: 16mm; }

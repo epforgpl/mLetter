@@ -136,6 +136,7 @@ class DocumentsTest extends TestCase
         $html = view($document->view(), $document->data())->render();
 
         $this->assertStringContainsString('Dotyczy pisma: Testowe pismo', $html);
+        $this->assertStringContainsString('.body { text-align: justify; }', $html);
         $this->assertStringNotContainsString('Dotyczy: Dotyczy pisma', $html);
     }
 }
