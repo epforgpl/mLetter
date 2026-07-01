@@ -32,7 +32,7 @@
     </div>
 
     @if ($subject)
-        <div class="subject">Dotyczy: {!! $subject !!}</div>
+        <div class="subject">{!! $subject !!}</div>
     @endif
 
     <div class="body">{!! $bodyHtml !!}</div>

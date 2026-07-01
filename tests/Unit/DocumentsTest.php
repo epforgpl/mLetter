@@ -90,7 +90,7 @@ class DocumentsTest extends TestCase
         $document = LetterDocument::make()
             ->dateLine('Warszawa, 30 czerwca 2026 r.')
             ->recipient('Jan Kowalski <script>bad()</script>', "ul. Testowa 1\n00-001 Warszawa", 'jan@example.test')
-            ->subject('odpowiedzi Fundacji Moje Państwo')
+            ->subject('Dotyczy: odpowiedzi Fundacji Moje Państwo')
             ->bodyHtml('<p>Kwota 3 333,00 zł</p>')
             ->signatureLines(['Z poważaniem,', 'Fundacja Moje Państwo'])
             ->footer(address: 'ul. Pańska 96/83, 00-837 Warszawa', identifiers: 'KRS 0000359730, NIP 7010253245');
@@ -99,7 +99,7 @@ class DocumentsTest extends TestCase
 
         $this->assertSame('mletter::documents.letter', $document->view());
         $this->assertStringNotContainsString('<script>', $data['recipientName']);
-        $this->assertStringContainsString('Fundacji&nbsp;Moje&nbsp;Państwo', $data['subject']);
+        $this->assertSame('Dotyczy: odpowiedzi Fundacji&nbsp;Moje&nbsp;Państwo', $data['subject']);
         $this->assertStringContainsString('3&nbsp;333,00&nbsp;zł', $data['bodyHtml']);
         $this->assertSame('ul. Pańska 96/83, 00-837 Warszawa', $data['organizationAddress']);
     }
@@ -125,5 +125,17 @@ class DocumentsTest extends TestCase
         $this->assertStringContainsString('Dokument nr 1', view($basicDocument->view(), $basicDocument->data())->render());
         $this->assertStringContainsString('Jan Kowalski', view($contract->view(), $contract->data())->render());
         $this->assertStringContainsString('Treść pisma', view($letterDocument->view(), $letterDocument->data())->render());
+    }
+
+    public function test_letter_document_renders_subject_as_full_line(): void
+    {
+        $document = LetterDocument::make()
+            ->subject('Dotyczy pisma: Testowe pismo')
+            ->bodyHtml('<p>Treść pisma</p>');
+
+        $html = view($document->view(), $document->data())->render();
+
+        $this->assertStringContainsString('Dotyczy pisma: Testowe pismo', $html);
+        $this->assertStringNotContainsString('Dotyczy: Dotyczy pisma', $html);
     }
 }
